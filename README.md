@@ -6,7 +6,7 @@ pod install
 
 	for Uber
 Add UberClientID and  UberServerToken in info plist. You can these info when you register your app in uber developer website
-<key>UberClientID</key>
+	<key>UberClientID</key>
 	<string></string>
 	<key>UberServerToken</key>
 	<string></string>
