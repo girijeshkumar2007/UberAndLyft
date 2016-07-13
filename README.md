@@ -4,7 +4,7 @@ Go to your project path and run the following comand on your terminal
 
 pod install
 
-for Uber
+	for Uber
 Add UberClientID and  UberServerToken in info plist. You can these info when you register your app in uber developer website
 <key>UberClientID</key>
 	<string></string>
