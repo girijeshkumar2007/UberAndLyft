@@ -11,9 +11,8 @@ import AFNetworking
 
 let LyftErrorDomain = "LyftErrorDomain"
 
-
-private  let kLyftClientId          =  "" // Only This value will be changes
-private  let kLyftClientSecret      =  "" // Only This value will be changes
+private  let kLyftClientId          =  "JcVZRFXoOcHP" // Only This value will be changes
+private  let kLyftClientSecret      =  "cU8idplvlr9Uj0Cv63yhNitJC9aucs7y" // Only This value will be changes
 
 private  let kLyftBaseUrl           =  "https://api.lyft.com/"
 
@@ -34,6 +33,7 @@ private  let kLyftStartLat          =  "start_lat"
 private  let kLyftStartLng          =  "start_lng"
 private  let kLyftEndLat            =  "end_lat"
 private  let kLyftEndLng            =  "end_lng"
+private  let kLyftRideType          =  "ride_type"
 private  let kLyftLat               =  "lat"
 private  let kLyftLng               =  "lng"
 private  let kLyftAccesToken        =  "access_token"
@@ -146,14 +146,15 @@ class TALyftServiceClass: AFHTTPSessionManager {
         }
     }
     
-    func getCostBetween(startLat: String?,startLng: String?,endLat: String?,endLng: String?, completionClosure: (result : AnyObject?) -> (),failClosure: (error : NSError?) -> ())
+    func getCostBetween(rideType: String?, startLat: String?,startLng: String?,endLat: String?,endLng: String?, completionClosure: (result : Dictionary<String,AnyObject>!) -> (),failClosure: (error : NSError?) -> ())
     {
         
         // Only Hit API if all the relevant properties can be accessed.
         guard let lyftStartLat = startLat ,
                 lyftStartLng = startLng ,
                 lyftEndLat = endLat ,
-                lyftEndLng = endLng
+                lyftEndLng = endLng,
+                lyftRideType = rideType
              else {
 
                 self.publishLyftError(LyftServiceErrorCode.kParameterFailed, failBlock: failClosure)
@@ -166,13 +167,28 @@ class TALyftServiceClass: AFHTTPSessionManager {
             if let tempAccesstoken = token
             {
                 //        let param = [kLyftStartLat:"37.7833",kLyftStartLng:"-122.4167",kLyftEndLat:"37.775200",kLyftEndLng:"-122.417587"]
-                let param = [kLyftStartLat:lyftStartLat,kLyftStartLng:lyftStartLng,kLyftEndLat:lyftEndLat,kLyftEndLng:lyftEndLng]
+                let param = [kLyftStartLat:lyftStartLat,kLyftStartLng:lyftStartLng,kLyftEndLat:lyftEndLat,kLyftEndLng:lyftEndLng,kLyftRideType:lyftRideType]
                 
+                self.requestSerializer.setAuthorizationHeaderFieldWithUsername(kLyftClientId, password: kLyftClientSecret)
                 self.requestSerializer.setValue("Bearer " + tempAccesstoken, forHTTPHeaderField: kLyftAuthorization)
                 self.GET(kLyftCost, parameters: param, progress: nil, success: { (task, reponse) in
                     
-                    print(reponse)
-                    completionClosure(result: reponse)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        
+                        if let reponsDic = reponse as? Dictionary<String,AnyObject>
+                        {
+                            if let costEstimates = reponsDic["cost_estimates"] as? Array<Dictionary<String,AnyObject>>
+                            {
+
+                                if let priceObj = costEstimates.last{
+                                    print(priceObj)
+                                    completionClosure(result: priceObj)
+                                    return;
+                                }
+                            }
+                        }
+                        failClosure(error: nil)
+                    })
                     
                 }) { (task, error) in
                     print(error.description)
