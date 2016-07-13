@@ -18,6 +18,8 @@ Add UberClientID and  UberServerToken in info plist. You can these info when you
 	
 	For Lyft
 private  let kLyftClientId          =  "" // Only This value will be changes
+
 private  let kLyftClientSecret      =  "" // Only This value will be changes
+
 Add kLyftClientId and  kLyftClientSecret in TALyftServiceClass.swift class. You can these info when you register your app in lyft developer website
 
