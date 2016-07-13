@@ -37,9 +37,9 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UberClientID</key>
-	<string>926cOsnZfAy2Iwn6d63GpLfBiqhiFmAs</string>
+	<string></string>
 	<key>UberServerToken</key>
-	<string>hhFEecduSL6MqLIbh7z7J9IwKkxYQbTcdRcxANEx</string>
+	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>uber</string>
